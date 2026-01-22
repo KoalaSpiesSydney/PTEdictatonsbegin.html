@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PTE Repeat Sentence & Write from Dictation – Sentence Beginnings | Modern English Australia</title>
+
+<style>
+:root{
+  --bg:#f5f5f5;
+  --card:#ffffff;
+  --ink:#1e1e1e;
+  --muted:#666;
+  --accent:#ff7a1a;
+  --line:#ccc;
+  --radius:10px;
+  --shadow:0 6px 24px rgba(0,0,0,.15);
+
+  --ok:#1db954;
+  --err:#e74c3c;
+  --soft:#f2f2f2;
+
+  --charcoal:#1e1e1e;
+  --max: 1000px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+img{max-width:100%;height:auto;display:block}
+
+/* =========================
+   BASE
+   ========================= */
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.75;
+}
+
+main{
+  max-width:900px;
+  margin:1rem auto;
+  padding:0 1rem 2rem;
+}
+
+section{
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+@media (min-width: 900px){
+  section{ padding:2rem; margin: 1.25rem 0; }
+  main{ margin: 1.5rem auto; }
+}
+
+h1,h2{
+  color:var(--accent);
+  text-align:center;
+  margin-bottom:1rem;
+  line-height:1.25;
+}
+
+p{margin:.7rem 0}
+
+ol{
+  list-style:decimal;
+  padding-left:1.25rem;
+}
+li{margin:1.2rem 0}
+
+/* =========================
+   HEADER (AS PER YOUR TEMPLATE)
+   ========================= */
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:var(--charcoal);
+  color:#fff;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+
+.topbar{
+  max-width:var(--max);
+  margin:0 auto;
+  padding:12px 16px;
+  display:flex;
+  flex-direction:column; /* mobile-first */
+  gap:10px;
+}
+
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+}
+
+.brand strong{
+  font-size:15px;
+  letter-spacing:.02em;
+  color:#fff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.brand span{
+  font-size:12px;
+  color:rgba(255,255,255,.75);
+  letter-spacing:.02em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.actions{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+/* plain header links (no border / no button box) */
+.nav-link{
+  color:#fff;
+  font-weight:600;
+  text-decoration:none;
+  padding:0;
+  border:none;
+  background:none;
+}
+
+.nav-link:hover{ text-decoration:underline; }
+
+.nav-link.back{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+
+@media (min-width: 700px){
+  .topbar{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    padding: 12px clamp(16px, 4vw, 28px);
+    gap:12px;
+  }
+  .brand strong{ font-size: clamp(14px, 2.2vw, 16px); }
+  .actions{ justify-content:flex-end; }
+}
+
+/* =========================
+   ANSWER UI (Window style)
+   ========================= */
+.answer-wrap{
+  margin-top:.8rem;
+  padding:0;
+  background:transparent;
+  border:none;
+  border-radius:0;
+}
+
+.answer-label{
+  font-weight:700;
+  font-size:.95rem;
+  margin-bottom:.4rem;
+}
+.answer-row{
+  display:flex;
+  gap:.6rem;
+  flex-wrap:wrap;
+  align-items:flex-start;
+}
+textarea.answer-input{
+  flex:1 1 320px;
+  width:100%;
+  min-height:54px;
+  padding:.7rem .8rem;
+  border:1px solid var(--line);
+  border-radius:999px;
+  outline:none;
+  font: inherit;
+  resize:vertical;
+}
+textarea.answer-input:focus{
+  border-color: rgba(255,122,26,.7);
+  box-shadow: 0 0 0 3px rgba(255,122,26,.18);
+  border-radius: 999px;
+}
+
+.btn{
+  appearance:none;
+  border:none;
+  border-radius:10px;
+  padding:.65rem 1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition: transform .05s ease, opacity .2s ease;
+  white-space:nowrap;
+}
+.btn:active{ transform: translateY(1px); }
+.btn-primary{ background: color:#fff; }
+.btn-ghost{ background: var(--soft); color: var(--ink); border:1px solid var(--line); }
+.btn:hover{ opacity:.92; }
+
+.feedback{
+  margin-top:.65rem;
+  padding:.7rem .8rem;
+  border-radius:12px;
+  background:#fff;
+}
+.feedback.ok{
+  border-color: rgba(29,185,84,.35);
+  background: rgba(29,185,84,.08);
+}
+.feedback.err{
+  border-color: rgba(231,76,60,.35);
+  background: rgba(231,76,60,.08);
+}
+.feedback-title{
+  font-weight:800;
+  margin-bottom:.25rem;
+}
+.small{
+  font-size:.92rem;
+  color: var(--muted);
+}
+.correction{
+  margin-top:.5rem;
+  padding:.7rem .8rem;
+  border-radius:12px;
+  border:1px dashed var(--line);
+  background:#fafafa;
+}
+.correction strong{
+  display:block;
+  margin-bottom:.25rem;
+}
+
+.diff{
+  margin-top:.45rem;
+  display:flex;
+  gap:.5rem;
+  flex-wrap:wrap;
+}
+.pill{
+  display:inline-block;
+  padding:.18rem .55rem;
+  border-radius:999px;
+  font-size:.86rem;
+  border:1px solid var(--line);
+  background:#fff;
+}
+.pill.missing{ border-color: rgba(231,76,60,.45); background: rgba(231,76,60,.08); }
+.pill.extra{ border-color: rgba(63,111,143,.45); background: rgba(63,111,143,.08); }
+
+/* links */
+a{
+  color:var(--accent);
+  text-decoration:none;
+  font-weight:600;
+}
+a:hover{text-decoration:underline}
+
+.nav-buttons{
+  display:flex;
+  justify-content:center;
+  gap:1rem;
+  margin:1.5rem 0 0;
+  flex-wrap:wrap;
+}
+
+.nav-buttons a{
+  background:var(--accent);
+  color:#fff;
+  padding:.65rem 1.25rem;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:700;
+  transition:opacity .3s;
+}
+.nav-buttons a:hover{opacity:.9}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  padding:1rem;
+  font-size:.9rem;
+  background:#fff;
+}
+
+@media(max-width:600px){
+  ol{padding-left:1.2rem}
+}
+
+/* =========================
+   QR (TOP RIGHT) - ADDED
+   ========================= */
+.qr-fab{
+  position:fixed;
+  top:10px;
+  left:10px;
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:flex-end;
+}
+.qr-btn{
+  appearance:none;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(30,31,33,.92);
+  color:#fff;
+  font-weight:800;
+  padding:.55rem .85rem;
+  border-radius:999px;
+  cursor:pointer;
+}
+.qr-btn:hover{ opacity:.92; }
+.qr-panel{
+  width:220px;
+  background:rgba(30,31,33,.95);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:14px;
+  padding:10px;
+  display:none;
+}
+.qr-panel.open{ display:block; }
+.qr-panel .qr-title{
+  color:#fff;
+  font-weight:800;
+  font-size:.92rem;
+  margin-bottom:8px;
+}
+#qrCode{
+  background:#fff;
+  border-radius:10px;
+  padding:10px;
+  width:max-content;
+}
+.qr-meta{
+  color:rgba(255,255,255,.75);
+  font-size:.82rem;
+  margin-top:8px;
+  word-break:break-all;
+}
+</style>
+</head>
+
+<body>
+
+<!-- QR Generator (Top Right) -->
+<div class="qr-fab" aria-label="QR generator">
+  <button class="qr-btn" id="qrToggle" type="button">QR</button>
+  <div class="qr-panel" id="qrPanel">
+    <div class="qr-title">QR code for this page</div>
+    <div id="qrCode" aria-label="QR code"></div>
+    <div class="qr-meta" id="qrUrl"></div>
+  </div>
+</div>
+
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <strong>Modern English Australia</strong>
+      <span>Koala Spies Sydney · PTE · Sentence Beginnings</span>
+    </div>
+
+    <nav class="actions" aria-label="Page navigation">
+      <a class="nav-link" href="https://koalaspiessydney.github.io/ModernEnglishAU/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="plain">
+  <h1>Repeat Sentence / Write From Dictation<br>Understanding the Beginning</h1>
+"
+>
+<a href="pron.html">
+  <img
+    src="pronunciaton.png"
+    alt="Sentence beginnings overview"
+    style="display:block; margin:0.5rem auto; max-width:250px; width:100%; border-radius:12px;"
+  >
+</a>>
+
+<p style="text-align:center;">
+  <a href="pron.html" 
+     style="color:#ff7a00; text-decoration:underline;">
+    pronunciation lesson
+  </a>
+</p>
+
+
+
+  <p>Many candidates struggle to hear the beginning of repeat sentences. Some foreign/ non-native tutors even claim that Pearson clips are missing the first few words—but that’s a myth. What’s actually happening is a filter created by your first language.</p>
+
+  <p><strong>There are 4 key things to understand before you listen like a native-speaker:</strong></p>
+
+  <ol>
+    <li>
+      <strong>English contracts small grammatical words</strong><br>
+      Articles, prepositions, and auxiliary verbs may sound like they disappear—but they’re still there, often reduced to a soft schwa sound (/ə/). Native speakers gloss over them rapidly, so they’re easy to miss if you’re not tuned in.
+    </li>
+    <li>
+      <strong>English blends chunks of 3–5 words</strong><br>
+      Instead of distinct individual words, native speech often runs words together in fluid “thought groups.” This can make a full phrase sound like a single, blurry unit, unless you’re listening for rhythm and intonation patterns.
+    </li>
+    <li>
+      <strong>Pronouns are always present—even if disguised</strong><br>
+      In Latin-based languages, subject pronouns aren’t always spoken. But in English, they’re always there: I, you, we, he, she, it. The catch? They’re usually contracted and fused with the verb—like “I’ve gone” or “She’ll be there”—making them harder to spot.
+    </li>
+    <li>
+      <strong>The Purpose is in the first few words.</strong> Unlike a lot of Asian language, the purpose of sentence is in the first few words. If you understand the purpose, it’s much easier to remember and repeat.
+    </li>
+  </ol>
+
+  <p>Click here for extra Help: <a href="#" aria-label="Extra help link">Review the basics in hearing ‘you’ and ‘we’.</a></p>
+
+  <p>Here are some practice focusing on understanding one of the most common sentence types in PTE: instructions, suggestions and obligations in third person.</p>
+
+  <p><strong>Modals:</strong> You or We with a modal or auxillary verb WILL (usually contracted ‘ll)/ MUST/ CAN/ CANT/ NEED TO/ HAVE</p>
+</section>
+<img
+  src="listen-and-write.png"
+  alt="Listening and sentence structure example"
+  style="display:block; margin:1rem auto; max-width:250px; width:100%; border-radius:12px;"
+>
+
+<section>
+  <h2>Complete the beginning (1 – 6)</h2>
+
+  <p>Complete the beginning of these repeat sentence/ write from dictation sentences.</p>
+
+  <ol>
+    <li>
+      <audio controls src="Youcanfind.wav"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> _________ ________ ______ plenty of information in the course textbook.</div>
+      <div class="answer-wrap" data-item="q1">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src="you must turn your phone off.wav"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> ______ _________ turn your phone off in all meeetings.</div>
+      <div class="answer-wrap" data-item="q2">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src="well-need-to-prepare-thoroughly.mp3"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> _________ _________ __ electronic devices to record the lecture.</div>
+      <div class="answer-wrap" data-item="q3">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src="we-cant-wait-any-longer.mp3"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> _____ ________ wait any longer to start the project.</div>
+      <div class="answer-wrap" data-item="q4">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src="you-have-to-find-a-partner.mp3"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> ______ ______ _______ find a partner to work with on the project.</div>
+      <div class="answer-wrap" data-item="q5">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src="Youllneedtobrindstudentid.wav"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> ______ _________ ___bring a student ID in order to enter the seminar.</div>
+      <div class="answer-wrap" data-item="q6">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+   <h2>Write the next 6 in full from dictation</h2>
+    <li>
+      <audio controls src="subblock_we-should-get-together-to-disc.mp3"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> __________________________________________.</div>
+      <div class="answer-wrap" data-item="q7">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src="Youneedtostudy.wav"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> _______________________________________.</div>
+      <div class="answer-wrap" data-item="q8">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+ 
+    <li>
+      <audio controls src="well-have-to-get-together-to-work-on-the-project.mp3"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> ______________________________________.</div>
+      <div class="answer-wrap" data-item="q9">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src= "Wemustbecareful.mp3"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> _________________________.</div>
+      <div class="answer-wrap" data-item="q10">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src="Youmustsubmit.mp3"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> ______________________.</div>
+      <div class="answer-wrap" data-item="q11">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+    <li>
+      <audio controls src="you-cant-use-electronic-devices.mp3"></audio>
+      <div class="gap-q"><strong>Prompt:</strong> ___________________________
+      <div class="answer-wrap" data-item="q12">
+        <div class="answer-label">Type the missing beginning:</div>
+        <div class="answer-row">
+          <textarea class="answer-input" placeholder="Type the missing beginning here…"></textarea>
+          <button class="btn btn-primary" data-action="check" type="button">Check</button>
+          <button class="btn btn-ghost" data-action="show" type="button">Show answer</button>
+        </div>
+        <div class="feedback" hidden></div>
+        <div class="correction" hidden></div>
+      </div>
+    </li>
+
+  
+
+ 
+    </li>
+  </ol>
+
+</section>
+
+</main>
+
+<footer>© Koala Spies Sydney · Modern English Australia · All Rights Reserved</footer>
+
+<!-- QRCode.js (client-side) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+/* ============================================================
+   QR GENERATOR (Top Right)
+   ============================================================ */
+(function(){
+  const toggle = document.getElementById("qrToggle");
+  const panel = document.getElementById("qrPanel");
+  const box = document.getElementById("qrCode");
+  const urlLabel = document.getElementById("qrUrl");
+
+  if (!toggle || !panel || !box || !urlLabel) return;
+
+  let made = false;
+
+  function make(){
+    const url = window.location.href;
+    urlLabel.textContent = url;
+
+    box.innerHTML = "";
+    if (typeof QRCode === "undefined") {
+      urlLabel.textContent = "QR library did not load.";
+      return;
+    }
+
+    new QRCode(box, {
+      text: url,
+      width: 180,
+      height: 180,
+      correctLevel: QRCode.CorrectLevel.M
+    });
+
+    made = true;
+  }
+
+  toggle.addEventListener("click", ()=>{
+    panel.classList.toggle("open");
+    if(panel.classList.contains("open") && !made){
+      make();
+    }
+  });
+})();
+
+/* ============================================================
+   ANSWER KEY (fill these with the correct missing beginnings)
+   ============================================================ */
+const ANSWER_KEY = {
+  q1:  "You can find",
+  q2:  "You must",
+  q3:  "We'll need to",
+  q4:  "We can't",
+  q5:  "You'll have to",
+  q6:  "You'll need to",
+  q7:  "We should get together to discusst the project",
+  q8:  "You need to study just the most influential movements",
+  q9:  "We'll have to get together to work on the project",
+  q10: "We must be careful in how we develop artificial intelligence",
+  q11: "You must submit your assign by Monday 9am at the latest",
+  q12: "You can't use electronic devices to record the lecture",
+}
+
+/* ===== Helpers (same approach as your template) ===== */
+function normalize(str){
+  return (str || "")
+    .toLowerCase()
+    .replace(/[’']/g,"'")
+    .replace(/[^a-z0-9\s']/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function words(str){
+  const n = normalize(str);
+  return n ? n.split(" ") : [];
+}
+
+/* Simple similarity: word-level overlap with light weighting */
+function similarity(user, correct){
+  const u = words(user);
+  const c = words(correct);
+  if(!c.length && !u.length) return 1;
+  if(!c.length) return 0;
+
+  const cCounts = new Map();
+  for(const w of c) cCounts.set(w, (cCounts.get(w)||0)+1);
+
+  let hits = 0;
+  for(const w of u){
+    const k = cCounts.get(w) || 0;
+    if(k>0){
+      hits++;
+      cCounts.set(w, k-1);
+    }
+  }
+  const precision = u.length ? hits / u.length : 0;
+  const recall = hits / c.length;
+  return (precision*0.45 + recall*0.55);
+}
+
+function diffPills(user, correct){
+  const u = words(user);
+  const c = words(correct);
+
+  const uCounts = new Map();
+  const cCounts = new Map();
+  for(const w of u) uCounts.set(w, (uCounts.get(w)||0)+1);
+  for(const w of c) cCounts.set(w, (cCounts.get(w)||0)+1);
+
+  const missing = [];
+  for(const [w, n] of cCounts.entries()){
+    const have = uCounts.get(w)||0;
+    if(have < n){
+      for(let i=0;i<(n-have);i++) missing.push(w);
+    }
+  }
+
+  const extra = [];
+  for(const [w, n] of uCounts.entries()){
+    const need = cCounts.get(w)||0;
+    if(n > need){
+      for(let i=0;i<(n-need);i++) extra.push(w);
+    }
+  }
+
+  return { missing, extra };
+}
+
+/* ===== Wiring ===== */
+document.querySelectorAll(".answer-wrap").forEach(wrap=>{
+  const key = wrap.dataset.item;
+  const input = wrap.querySelector(".answer-input");
+  const fb = wrap.querySelector(".feedback");
+  const corr = wrap.querySelector(".correction");
+
+  wrap.addEventListener("click", (e)=>{
+    const btn = e.target.closest("button");
+    if(!btn) return;
+
+    const action = btn.dataset.action;
+    const correct = ANSWER_KEY[key];
+
+    if(!correct){
+      fb.hidden = false;
+      fb.className = "feedback err";
+      fb.innerHTML = `
+        <div class="feedback-title">Answer key missing</div>
+        <div class="small">Add the correct beginning for <strong>${key}</strong> inside <code>ANSWER_KEY</code>.</div>
+      `;
+      corr.hidden = true;
+      return;
+    }
+
+    if(action === "show"){
+      corr.hidden = false;
+      corr.innerHTML = `
+        <strong>Correct beginning:</strong>
+        <div>${correct}</div>
+      `;
+      return;
+    }
+
+    if(action === "check"){
+      const userText = input.value.trim();
+      const score = similarity(userText, correct);
+      const pct = Math.round(score*100);
+      const exact = normalize(userText) === normalize(correct);
+      const {missing, extra} = diffPills(userText, correct);
+
+      fb.hidden = false;
+      fb.className = "feedback " + (exact || pct>=90 ? "ok" : "err");
+
+      const title = exact ? "Perfect" : (pct>=90 ? "Very close" : (pct>=70 ? "Good attempt" : "Needs correction"));
+
+      fb.innerHTML = `
+        <div class="feedback-title">${title}</div>
+        <div class="small">Match score: <strong>${pct}%</strong> (punctuation ignored)</div>
+        ${
+          (missing.length || extra.length) ? `
+          <div class="diff">
+            ${missing.slice(0,12).map(w=>`<span class="pill missing">missing: ${w}</span>`).join("")}
+            ${extra.slice(0,12).map(w=>`<span class="pill extra">extra: ${w}</span>`).join("")}
+            ${(missing.length>12 || extra.length>12) ? `<span class="pill">+ more…</span>` : ""}
+          </div>` : `<div class="small">No missing/extra words detected.</div>`
+        }
+      `;
+
+      if(!exact){
+        corr.hidden = false;
+        corr.innerHTML = `
+          <strong>Correction:</strong>
+          <div>${correct}</div>
+        `;
+      }else{
+        corr.hidden = true;
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>
